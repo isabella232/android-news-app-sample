@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">Multiple tabs sample</string>
+
+    <string name="divider_circle" translatable="false">•</string>
+</resources>
