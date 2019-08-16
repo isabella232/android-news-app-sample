@@ -1,8 +1,11 @@
 package com.taboola.multiple_tabs_sdk_api.main;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.constraint.ConstraintLayout;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
@@ -17,13 +20,18 @@ import android.widget.TextView;
 import com.taboola.android.api.TBImageView;
 import com.taboola.android.api.TBRecommendationItem;
 import com.taboola.android.api.TBTextView;
+import com.taboola.android.api.TaboolaOnClickListener;
 import com.taboola.multiple_tabs_sdk_api.R;
+import com.taboola.multiple_tabs_sdk_api.SampleApplication;
+import com.taboola.multiple_tabs_sdk_api.SummaryActivity;
 import com.taboola.multiple_tabs_sdk_api.utils.DateTimeUtil;
+import com.taboola.multiple_tabs_sdk_api.utils.ItemUtil;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+
     private final int TYPE_SHORT_ITEM = 0;
     private final int TYPE_FAKE_ITEM = 1;
 
@@ -161,6 +169,48 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                     thumbnail.handleClick();
                 }
             });
+
+            TaboolaOnClickListener taboolaOnClickListener = new TaboolaOnClickListener() {
+                @Override
+                public boolean onItemClick(String placementName, String itemId, String clickUrl, boolean isOrganic) {
+                    Intent intent = new Intent(context, SummaryActivity.class);
+                    Bundle bundle = new Bundle();
+
+                    TBRecommendationItem item = findItemById(feedItems, clickUrl);
+                    if (item == null) {
+                        return false; // todo
+                    }
+                    item.getTitleView(context);
+                    bundle.putString("title", item.getTitleView(context).getText().toString());
+                    bundle.putString("time", DateTimeUtil.getTimeBetween(item.getExtraDataMap().get("created")));
+                    if (item.getDescriptionView(context) != null) {
+                        bundle.putString("description", item.getDescriptionView(context).getText().toString());
+                    }
+                    int imageHeight = (int) context.getResources().getDimension(R.dimen.summary_page_thumbnail_height);
+
+                    bundle.putString("url", ItemUtil.getItemThumbnailUrl(item,
+                            ItemUtil.getScreenWidth(), imageHeight));
+                    bundle.putString("clickUrl", clickUrl);
+                    intent.putExtras(bundle);
+                    context.startActivity(intent);
+                    return false;
+                }
+            };
+            ContentRepository.handleItemClick(((SampleApplication) context.getApplicationContext()).getAppConfig().getPublisher(),
+                    taboolaOnClickListener);
+        }
+
+        @Nullable
+        TBRecommendationItem findItemById(List<Object> feedItems, String clickUrl) { // todo find item across different feeds
+            for (int i = 0; i < feedItems.size(); i++) {
+                if (feedItems.get(i) instanceof TBRecommendationItem) {
+                    TBRecommendationItem tbRecommendationItem = (TBRecommendationItem) feedItems.get(i);
+                    if ((tbRecommendationItem).getExtraDataMap().get("url").equals("\"" + clickUrl + "\"")) {
+                        return tbRecommendationItem;
+                    }
+                } // else it's a fake item
+            }
+            return null;
         }
 
         void onViewRecycled() {
