@@ -20,9 +20,7 @@ import android.widget.TextView;
 import com.taboola.android.api.TBImageView;
 import com.taboola.android.api.TBRecommendationItem;
 import com.taboola.android.api.TBTextView;
-import com.taboola.android.api.TaboolaOnClickListener;
 import com.taboola.multiple_tabs_sdk_api.R;
-import com.taboola.multiple_tabs_sdk_api.SampleApplication;
 import com.taboola.multiple_tabs_sdk_api.SummaryActivity;
 import com.taboola.multiple_tabs_sdk_api.utils.DateTimeUtil;
 import com.taboola.multiple_tabs_sdk_api.utils.ItemUtil;
@@ -105,6 +103,47 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         feedItems.clear();
     }
 
+    void onItemClicked(@NonNull String clickUrl) {
+        TBRecommendationItem clickedItem = findItemByClickUrl(feedItems, clickUrl);
+        if (clickedItem == null) {
+            return; // item that was clicked is not in this fragment
+        }
+
+//        clickedItem.reportEvent("FeedItemTapped", new HashMap<String, String>(0), ""); // todo add BI event
+
+        Bundle bundle = new Bundle();
+        bundle.putString("title", clickedItem.getTitleView(context).getText().toString());
+        bundle.putString("time", DateTimeUtil.getTimeBetween(clickedItem.getExtraDataMap().get("created")));
+        if (clickedItem.getDescriptionView(context) != null) {
+            bundle.putString("description", clickedItem.getDescriptionView(context).getText().toString());
+        }
+
+        int imageHeight = (int) context.getResources().getDimension(R.dimen.summary_page_thumbnail_height);
+        bundle.putString("url", ItemUtil.getItemThumbnailUrl(clickedItem,
+                ItemUtil.getScreenWidth(), imageHeight));
+        bundle.putString("clickUrl", clickUrl);
+
+        Intent intent = new Intent(context, SummaryActivity.class);
+        intent.putExtras(bundle);
+        context.startActivity(intent);
+    }
+
+    @Nullable
+    private TBRecommendationItem findItemByClickUrl(List<Object> feedItems, String clickUrl) {
+        for (Object feedItem : feedItems) {
+            if (feedItem instanceof TBRecommendationItem) {
+                TBRecommendationItem tbRecommendationItem = (TBRecommendationItem) feedItem;
+
+                String currentItemUrl = (tbRecommendationItem).getExtraDataMap().get("url");
+                if (("\"" + clickUrl + "\"").equals(currentItemUrl)) {
+                    return tbRecommendationItem;
+                }
+
+            } // else it's a fake item
+        }
+        return null;
+    }
+
     class ShortItemViewHolder extends RecyclerView.ViewHolder {
 
         private FrameLayout itemTitleContainer;
@@ -170,47 +209,6 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                 }
             });
 
-            TaboolaOnClickListener taboolaOnClickListener = new TaboolaOnClickListener() {
-                @Override
-                public boolean onItemClick(String placementName, String itemId, String clickUrl, boolean isOrganic) {
-                    Intent intent = new Intent(context, SummaryActivity.class);
-                    Bundle bundle = new Bundle();
-
-                    TBRecommendationItem item = findItemById(feedItems, clickUrl);
-                    if (item == null) {
-                        return false; // todo
-                    }
-                    item.getTitleView(context);
-                    bundle.putString("title", item.getTitleView(context).getText().toString());
-                    bundle.putString("time", DateTimeUtil.getTimeBetween(item.getExtraDataMap().get("created")));
-                    if (item.getDescriptionView(context) != null) {
-                        bundle.putString("description", item.getDescriptionView(context).getText().toString());
-                    }
-                    int imageHeight = (int) context.getResources().getDimension(R.dimen.summary_page_thumbnail_height);
-
-                    bundle.putString("url", ItemUtil.getItemThumbnailUrl(item,
-                            ItemUtil.getScreenWidth(), imageHeight));
-                    bundle.putString("clickUrl", clickUrl);
-                    intent.putExtras(bundle);
-                    context.startActivity(intent);
-                    return false;
-                }
-            };
-            ContentRepository.handleItemClick(((SampleApplication) context.getApplicationContext()).getAppConfig().getPublisher(),
-                    taboolaOnClickListener);
-        }
-
-        @Nullable
-        TBRecommendationItem findItemById(List<Object> feedItems, String clickUrl) { // todo find item across different feeds
-            for (int i = 0; i < feedItems.size(); i++) {
-                if (feedItems.get(i) instanceof TBRecommendationItem) {
-                    TBRecommendationItem tbRecommendationItem = (TBRecommendationItem) feedItems.get(i);
-                    if ((tbRecommendationItem).getExtraDataMap().get("url").equals("\"" + clickUrl + "\"")) {
-                        return tbRecommendationItem;
-                    }
-                } // else it's a fake item
-            }
-            return null;
         }
 
         void onViewRecycled() {

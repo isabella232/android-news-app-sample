@@ -2,6 +2,7 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:taboola="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -10,50 +11,48 @@
         android:layout_height="wrap_content">
 
         <ImageView
-            android:id="@+id/item_page"
+            android:id="@+id/iv_summary_thumbnail"
             android:layout_width="match_parent"
             android:layout_height="@dimen/summary_page_thumbnail_height"
             android:layout_marginStart="0dp"
             android:layout_marginTop="0dp"
             android:layout_marginEnd="0dp"
-            android:clickable="true"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
         <RelativeLayout
-            android:id="@+id/item_title_section"
             android:layout_width="match_parent"
             android:layout_height="100dp"
             android:background="#B396674F"
-            app:layout_constraintBottom_toBottomOf="@+id/item_page"
+            app:layout_constraintBottom_toBottomOf="@+id/iv_summary_thumbnail"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent">
 
             <TextView
-                android:id="@+id/item_title"
+                android:id="@+id/tv_summary_title"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="10dp"
                 android:maxLines="3"
-                android:text="Title"
                 android:textColor="#FFFFFF"
-                android:textSize="20sp" />
+                android:textSize="20sp"
+                tools:text="Title" />
         </RelativeLayout>
 
         <TextView
-            android:id="@+id/item_time"
+            android:id="@+id/tv_summary_time"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="10dp"
-            android:text="7 hours ago"
             android:textColor="@color/night_rider"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/item_page" />
+            app:layout_constraintTop_toBottomOf="@+id/iv_summary_thumbnail"
+            tools:text="7 hours ago" />
 
         <TextView
-            android:id="@+id/item_description"
+            android:id="@+id/tv_summary_description"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="5dp"
@@ -64,10 +63,10 @@
             android:textSize="16sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/item_time" />
+            app:layout_constraintTop_toBottomOf="@+id/tv_summary_time" />
 
         <LinearLayout
-            android:id="@+id/read_more"
+            android:id="@+id/btn_read_more"
             android:layout_width="match_parent"
             android:layout_height="35dp"
             android:layout_marginStart="10dp"
@@ -79,7 +78,7 @@
             android:orientation="horizontal"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/item_description">
+            app:layout_constraintTop_toBottomOf="@+id/tv_summary_description">
 
             <ImageView
                 android:layout_width="wrap_content"
@@ -104,7 +103,7 @@
             android:layout_margin="10dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/read_more"
+            app:layout_constraintTop_toBottomOf="@+id/btn_read_more"
             taboola:tb_mode="alternating-widget-without-video"
             taboola:tb_page_type="article"
             taboola:tb_placement="Below Article"

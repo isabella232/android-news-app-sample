@@ -6,7 +6,6 @@ import com.taboola.android.api.TBRecommendationRequestCallback;
 import com.taboola.android.api.TBRecommendationsRequest;
 import com.taboola.android.api.TBRecommendationsResponse;
 import com.taboola.android.api.TaboolaApi;
-import com.taboola.android.api.TaboolaOnClickListener;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -77,11 +76,6 @@ public class ContentRepository {
                     ""));
         }
         return list;
-    }
-
-    public static void handleItemClick(String publisher,
-                                       TaboolaOnClickListener onClickListener) {
-        TaboolaApi.getInstance(publisher).setOnClickListener(onClickListener);
     }
 
 }

@@ -78,6 +78,12 @@ public class TabFragment extends Fragment implements SwipeRefreshLayout.OnRefres
         return view;
     }
 
+    public void onItemClicked(@NonNull String clickUrl) {
+        if (feedAdapter != null) {
+            feedAdapter.onItemClicked(clickUrl);
+        }
+    }
+
     private void fetchInitialContent() {
         int thumbnailHeight = (int) getContext().getResources()
                 .getDimension(R.dimen.height_feed_article_short_thumbnail);

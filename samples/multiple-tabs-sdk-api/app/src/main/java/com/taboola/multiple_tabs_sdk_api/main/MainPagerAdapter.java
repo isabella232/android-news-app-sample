@@ -1,5 +1,6 @@
 package com.taboola.multiple_tabs_sdk_api.main;
 
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -12,7 +13,7 @@ import java.util.List;
 
 public class MainPagerAdapter extends FragmentStatePagerAdapter {
 
-    private final List<Fragment> fragmentList = new ArrayList<>();
+    private final List<TabFragment> fragmentList = new ArrayList<>();
     private final List<String> fragmentTitleList = new ArrayList<>();
 
     MainPagerAdapter(FragmentManager fm, List<AppConfig.TabConfig> tabsConfig) {
@@ -21,6 +22,12 @@ public class MainPagerAdapter extends FragmentStatePagerAdapter {
         for (AppConfig.TabConfig tabConfig : tabsConfig) {
             fragmentList.add(TabFragment.newInstance(tabConfig.getPlacement()));
             fragmentTitleList.add(tabConfig.getTitle());
+        }
+    }
+
+    public void onItemClicked(@NonNull String clickUrl) {
+        for (TabFragment fragment : fragmentList) {
+            fragment.onItemClicked(clickUrl);
         }
     }
 
