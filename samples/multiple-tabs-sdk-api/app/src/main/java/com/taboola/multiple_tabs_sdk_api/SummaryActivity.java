@@ -16,7 +16,7 @@ import com.taboola.android.TaboolaWidget;
 import java.util.HashMap;
 
 public class SummaryActivity extends Activity {
-
+    
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
