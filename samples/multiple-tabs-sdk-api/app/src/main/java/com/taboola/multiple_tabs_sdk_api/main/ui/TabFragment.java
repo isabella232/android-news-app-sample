@@ -1,4 +1,4 @@
-package com.taboola.multiple_tabs_sdk_api.main;
+package com.taboola.multiple_tabs_sdk_api.main.ui;
 
 
 import android.os.Bundle;
@@ -15,9 +15,10 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.taboola.android.api.TBPlacement;
-import com.taboola.multiple_tabs_sdk_api.AppConfig;
 import com.taboola.multiple_tabs_sdk_api.R;
-import com.taboola.multiple_tabs_sdk_api.SampleApplication;
+import com.taboola.multiple_tabs_sdk_api.main.SampleApplication;
+import com.taboola.multiple_tabs_sdk_api.main.data.AppConfig;
+import com.taboola.multiple_tabs_sdk_api.main.data.ContentRepository;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -121,6 +122,7 @@ public class TabFragment extends Fragment implements SwipeRefreshLayout.OnRefres
     private void onContentFetched(TBPlacement placement) {
         swipeRefreshLayout.setRefreshing(false);
         lastUsedPlacement = placement;
+        lastUsedPlacement.prefetchThumbnails();
 
         List<Object> itemsAsObjectsList = new ArrayList<>(placement.getItems().size());
 

@@ -1,4 +1,4 @@
-package com.taboola.multiple_tabs_sdk_api;
+package com.taboola.multiple_tabs_sdk_api.main;
 
 import android.app.Application;
 import android.graphics.drawable.Drawable;
@@ -7,6 +7,8 @@ import android.support.v4.content.res.ResourcesCompat;
 import com.google.gson.Gson;
 import com.taboola.android.api.TaboolaApi;
 import com.taboola.android.utils.AssetUtil;
+import com.taboola.multiple_tabs_sdk_api.R;
+import com.taboola.multiple_tabs_sdk_api.main.data.AppConfig;
 
 import java.util.HashMap;
 import java.util.Map;

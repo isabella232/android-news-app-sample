@@ -1,4 +1,4 @@
-package com.taboola.multiple_tabs_sdk_api.main;
+package com.taboola.multiple_tabs_sdk_api.main.data;
 
 public class FakeItemModel {
 

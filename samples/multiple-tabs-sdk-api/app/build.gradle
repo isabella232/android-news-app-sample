@@ -4,14 +4,16 @@ android {
     compileSdkVersion 28
     defaultConfig {
         applicationId "com.taboola.taboola.multiple_tabs_sdk_api"
-        minSdkVersion 16
-        targetSdkVersion 28
+        minSdkVersion 17
+        targetSdkVersion 27
         versionCode 1
         versionName "1.0"
 
         vectorDrawables.useSupportLibrary = true
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
+    useLibrary 'org.apache.http.legacy'
+
     buildTypes {
         release {
             minifyEnabled false

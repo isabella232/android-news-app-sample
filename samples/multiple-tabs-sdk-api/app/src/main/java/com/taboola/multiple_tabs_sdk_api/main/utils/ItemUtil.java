@@ -1,4 +1,4 @@
-package com.taboola.multiple_tabs_sdk_api.utils;
+package com.taboola.multiple_tabs_sdk_api.main.utils;
 
 import android.content.res.Resources;
 import android.support.annotation.NonNull;

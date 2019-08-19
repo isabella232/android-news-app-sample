@@ -1,4 +1,4 @@
-package com.taboola.multiple_tabs_sdk_api;
+package com.taboola.multiple_tabs_sdk_api.main.data;
 
 import java.util.List;
 

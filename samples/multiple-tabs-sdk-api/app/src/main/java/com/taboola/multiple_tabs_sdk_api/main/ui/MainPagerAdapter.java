@@ -1,4 +1,4 @@
-package com.taboola.multiple_tabs_sdk_api.main;
+package com.taboola.multiple_tabs_sdk_api.main.ui;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -6,7 +6,8 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 
-import com.taboola.multiple_tabs_sdk_api.AppConfig;
+import com.taboola.multiple_tabs_sdk_api.main.ui.TabFragment;
+import com.taboola.multiple_tabs_sdk_api.main.data.AppConfig;
 
 import java.util.ArrayList;
 import java.util.List;

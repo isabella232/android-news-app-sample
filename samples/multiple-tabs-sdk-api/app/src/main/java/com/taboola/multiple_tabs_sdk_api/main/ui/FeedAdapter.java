@@ -1,8 +1,9 @@
-package com.taboola.multiple_tabs_sdk_api.main;
+package com.taboola.multiple_tabs_sdk_api.main.ui;
 
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -21,10 +22,12 @@ import com.taboola.android.api.TBImageView;
 import com.taboola.android.api.TBRecommendationItem;
 import com.taboola.android.api.TBTextView;
 import com.taboola.multiple_tabs_sdk_api.R;
-import com.taboola.multiple_tabs_sdk_api.SummaryActivity;
-import com.taboola.multiple_tabs_sdk_api.utils.DateTimeUtil;
-import com.taboola.multiple_tabs_sdk_api.utils.ItemUtil;
+import com.taboola.multiple_tabs_sdk_api.main.data.FakeItemModel;
+import com.taboola.multiple_tabs_sdk_api.main.utils.DateTimeUtil;
+import com.taboola.multiple_tabs_sdk_api.main.utils.ItemUtil;
+import com.taboola.multiple_tabs_sdk_api.main.utils.NetworkUtil;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -103,30 +106,46 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         feedItems.clear();
     }
 
-    void onItemClicked(@NonNull String clickUrl) {
+    void onItemClicked(@NonNull final String clickUrl) {
         TBRecommendationItem clickedItem = findItemByClickUrl(feedItems, clickUrl);
         if (clickedItem == null) {
             return; // item that was clicked is not in this fragment
         }
 
-//        clickedItem.reportEvent("FeedItemTapped", new HashMap<String, String>(0), ""); // todo add BI event
+
+        fireClickUrlAsPixel(clickUrl);
+
 
         Bundle bundle = new Bundle();
-        bundle.putString("title", clickedItem.getTitleView(context).getText().toString());
-        bundle.putString("time", DateTimeUtil.getTimeBetween(clickedItem.getExtraDataMap().get("created")));
-        if (clickedItem.getDescriptionView(context) != null) {
-            bundle.putString("description", clickedItem.getDescriptionView(context).getText().toString());
-        }
-
         int imageHeight = (int) context.getResources().getDimension(R.dimen.summary_page_thumbnail_height);
-        bundle.putString("url", ItemUtil.getItemThumbnailUrl(clickedItem,
-                ItemUtil.getScreenWidth(), imageHeight));
+        bundle.putString("url", ItemUtil.getItemThumbnailUrl(clickedItem, ItemUtil.getScreenWidth(), imageHeight));
         bundle.putString("clickUrl", clickUrl);
+        bundle.putParcelable("clickedItem", clickedItem);
 
         Intent intent = new Intent(context, SummaryActivity.class);
         intent.putExtras(bundle);
         context.startActivity(intent);
     }
+
+    /**
+     * fire the click url as pixel for bi purpose.
+     * you can do it as you wish in your code, just make sure you are firing this url before open summary page
+     *
+     * @param clickUrl the real click url of this article
+     */
+    private void fireClickUrlAsPixel(@NonNull final String clickUrl) {
+        AsyncTask.SERIAL_EXECUTOR.execute(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    NetworkUtil.fireClickUrlAsPixel(clickUrl);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+    }
+
 
     @Nullable
     private TBRecommendationItem findItemByClickUrl(List<Object> feedItems, String clickUrl) {

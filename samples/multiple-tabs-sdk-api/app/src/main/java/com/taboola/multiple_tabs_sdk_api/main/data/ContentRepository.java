@@ -1,4 +1,4 @@
-package com.taboola.multiple_tabs_sdk_api.main;
+package com.taboola.multiple_tabs_sdk_api.main.data;
 
 import com.taboola.android.api.TBPlacement;
 import com.taboola.android.api.TBPlacementRequest;
@@ -6,6 +6,7 @@ import com.taboola.android.api.TBRecommendationRequestCallback;
 import com.taboola.android.api.TBRecommendationsRequest;
 import com.taboola.android.api.TBRecommendationsResponse;
 import com.taboola.android.api.TaboolaApi;
+import com.taboola.multiple_tabs_sdk_api.main.data.FakeItemModel;
 
 import java.util.ArrayList;
 import java.util.List;
