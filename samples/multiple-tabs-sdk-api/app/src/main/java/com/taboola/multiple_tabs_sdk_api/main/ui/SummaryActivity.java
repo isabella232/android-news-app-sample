@@ -3,7 +3,6 @@ package com.taboola.multiple_tabs_sdk_api.main.ui;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
@@ -12,25 +11,21 @@ import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
 import com.taboola.android.TaboolaWidget;
+import com.taboola.android.api.TBPlacement;
 import com.taboola.android.api.TBRecommendationItem;
-import com.taboola.android.utils.AdvertisingIdClient;
 import com.taboola.android.utils.OnClickHelper;
 import com.taboola.multiple_tabs_sdk_api.R;
 import com.taboola.multiple_tabs_sdk_api.main.data.RecommendationItemExtraData;
 import com.taboola.multiple_tabs_sdk_api.main.utils.DateTimeUtil;
-import com.taboola.multiple_tabs_sdk_api.main.utils.TBDeviceInfoUtil;
+import com.taboola.multiple_tabs_sdk_api.main.utils.NetworkUtil;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.HashMap;
-import java.util.Locale;
-import java.util.Map;
 
 public class SummaryActivity extends Activity {
 
-    public static final String ANDROID = "Android";
     private TBRecommendationItem mTbRecommendationItem;
     private RecommendationItemExtraData mRecommendationItemExtraData;
+    private TBPlacement mPlacemnet;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,8 +37,9 @@ public class SummaryActivity extends Activity {
     }
 
     private void parseRI(Intent intent) {
-        if (intent != null && intent.hasExtra("clickedItem")) {
+        if (intent != null) {
             mTbRecommendationItem = intent.getParcelableExtra("clickedItem");
+            mPlacemnet = intent.getParcelableExtra("clickedItemPlacement");
             mRecommendationItemExtraData = new RecommendationItemExtraData(mTbRecommendationItem.getExtraDataMap());
         }
     }
@@ -77,42 +73,23 @@ public class SummaryActivity extends Activity {
 
 
         onTbItemFinishToLoad();
-
-
     }
 
     private void onTbItemFinishToLoad() {
-        final String eventType = "SummaryRenderEvent";
-        mTbRecommendationItem.reportEvent(eventType, getEventMap(eventType), "youmaylike");
+        final String eventType = "SummaryRender";
+        reportMobileEvent(eventType);
     }
-
-    private Map<String, String> getEventMap(String eventType) {
-        Map<String, String> map = new HashMap<>();
-        map.put("device_id", AdvertisingIdClient.getCachedAdvertisingId(this));
-        map.put("event_type", eventType);
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ", Locale.US);
-        map.put("time", sdf.format(new Date(System.currentTimeMillis())));
-        map.put("os_version", Build.VERSION.RELEASE);
-        map.put("os_name", ANDROID);
-        map.put("platform", ANDROID);
-        map.put("device_manufacturer", Build.MANUFACTURER);
-        map.put("language", Locale.getDefault().getDisplayLanguage(Locale.US));
-        map.put("publisher", mTbRecommendationItem.getPublisherId());
-        map.put("device_model", TBDeviceInfoUtil.getDeviceName());
-        map.put("app_version", TBDeviceInfoUtil.getAppVersion(this));
-        map.put("carrier", TBDeviceInfoUtil.getCarrier(this));
-        map.put("sdk_version", com.taboola.android.BuildConfig.VERSION_NAME);
-        return map;
-    }
-
 
     private void onReadMoreClicked() {
-        final String eventType = "ReadMoreClickedEvent";
-        mTbRecommendationItem.reportEvent(eventType, getEventMap(eventType), "youmaylike");
-        // OnClickHelper.openUrlInTabsOrBrowser(this, mRecommendationItemExtraData.getUrl());
+        final String eventType = "ReadMoreClick";
+        reportMobileEvent(eventType);
 
         String url = getIntent().getStringExtra("clickUrl");
         OnClickHelper.openUrlInTabsOrBrowser(this, url);
+    }
+
+    private void reportMobileEvent(String eventType) {
+        NetworkUtil.reportMobileEvent(this, mPlacemnet, mTbRecommendationItem, eventType);
     }
 
 }

@@ -3,7 +3,6 @@ package com.taboola.multiple_tabs_sdk_api.main.ui;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -25,9 +24,7 @@ import com.taboola.multiple_tabs_sdk_api.R;
 import com.taboola.multiple_tabs_sdk_api.main.data.FakeItemModel;
 import com.taboola.multiple_tabs_sdk_api.main.utils.DateTimeUtil;
 import com.taboola.multiple_tabs_sdk_api.main.utils.ItemUtil;
-import com.taboola.multiple_tabs_sdk_api.main.utils.NetworkUtil;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -112,38 +109,16 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             return; // item that was clicked is not in this fragment
         }
 
-
-        fireClickUrlAsPixel(clickUrl);
-
-
         Bundle bundle = new Bundle();
         int imageHeight = (int) context.getResources().getDimension(R.dimen.summary_page_thumbnail_height);
         bundle.putString("url", ItemUtil.getItemThumbnailUrl(clickedItem, ItemUtil.getScreenWidth(), imageHeight));
         bundle.putString("clickUrl", clickUrl);
         bundle.putParcelable("clickedItem", clickedItem);
+        bundle.putParcelable("clickedItemPlacement", clickedItem.getPlacement());
 
         Intent intent = new Intent(context, SummaryActivity.class);
         intent.putExtras(bundle);
         context.startActivity(intent);
-    }
-
-    /**
-     * fire the click url as pixel for bi purpose.
-     * you can do it as you wish in your code, just make sure you are firing this url before open summary page
-     *
-     * @param clickUrl the real click url of this article
-     */
-    private void fireClickUrlAsPixel(@NonNull final String clickUrl) {
-        AsyncTask.SERIAL_EXECUTOR.execute(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    NetworkUtil.fireClickUrlAsPixel(clickUrl);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-        });
     }
 
 

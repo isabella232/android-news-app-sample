@@ -110,7 +110,7 @@ public class MainActivity extends AppCompatActivity {
 
     private boolean parseClickUrlForSummaryPage(String clickUrl) {
         Uri uri = Uri.parse(clickUrl);
-        return uri.getBooleanQueryParameter("summary_page", false);
+        return uri.getBooleanQueryParameter("summary_page", true);
     }
 
 }
