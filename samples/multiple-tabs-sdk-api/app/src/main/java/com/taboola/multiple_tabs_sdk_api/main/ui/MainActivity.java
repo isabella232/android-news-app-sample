@@ -6,6 +6,7 @@ import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
+import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -110,7 +111,11 @@ public class MainActivity extends AppCompatActivity {
 
     private boolean parseClickUrlForSummaryPage(String clickUrl) {
         Uri uri = Uri.parse(clickUrl);
-        return uri.getBooleanQueryParameter("summary_page", true);
+        String redirUrl = uri.getQueryParameter("redir");
+        if (TextUtils.isEmpty(redirUrl)) {
+            return false;
+        }
+        return Uri.parse(redirUrl).getBooleanQueryParameter("summary_page", true);
     }
 
 }
