@@ -147,7 +147,7 @@ public class TabFragment extends Fragment implements SwipeRefreshLayout.OnRefres
     }
 
     @Nullable
-    private String getPlacementName() {
+    public String getPlacementName() {
         Bundle data = getArguments();
         if (data != null) {
             return data.getString(EXTRA_KEY_PLACEMENT_NAME);
@@ -155,5 +155,10 @@ public class TabFragment extends Fragment implements SwipeRefreshLayout.OnRefres
             Log.e(TAG, "getPlacementName: placement name is not set");
             return null;
         }
+    }
+
+
+    public boolean isOpenInSummaryPage(String clickUrl) {
+        return feedAdapter.isSummaryPage(clickUrl);
     }
 }

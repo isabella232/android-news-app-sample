@@ -25,8 +25,12 @@ import com.taboola.multiple_tabs_sdk_api.main.data.FakeItemModel;
 import com.taboola.multiple_tabs_sdk_api.main.utils.DateTimeUtil;
 import com.taboola.multiple_tabs_sdk_api.main.utils.ItemUtil;
 
+import org.json.JSONObject;
+
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
@@ -34,6 +38,7 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private final int TYPE_FAKE_ITEM = 1;
 
     private List<Object> feedItems = new ArrayList<>();
+    private Map<String, TBRecommendationItem> mRecommendationItemMap = new HashMap<>();
 
     private Context context;
 
@@ -97,6 +102,28 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     void addItems(List<Object> newItems) {
         feedItems.addAll(newItems);
+        addItemsToMap(newItems);
+
+    }
+
+    private void addItemsToMap(List<Object> newItems) {
+        //using this map to find item O(1)
+        for (Object feedItem : newItems) {
+            if (feedItem instanceof TBRecommendationItem) {
+                TBRecommendationItem tbRecommendationItem = (TBRecommendationItem) feedItem;
+                String currentItemUrl = (tbRecommendationItem).getExtraDataMap().get("url");
+                if (!TextUtils.isEmpty(currentItemUrl)) {
+                    mRecommendationItemMap.put(currentItemUrl, tbRecommendationItem);
+                }
+            }
+        }
+    }
+
+    @Nullable
+    private TBRecommendationItem findItemByClickUrl(String clickUrl) {
+
+        // you can also avoid use map and instead for over all items and look for matching item clickUrl and currentItemUrl (see addItemsToMap method)
+        return mRecommendationItemMap.get(clickUrl);
     }
 
     void clearItems() {
@@ -104,7 +131,7 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     }
 
     void onItemClicked(@NonNull final String clickUrl) {
-        TBRecommendationItem clickedItem = findItemByClickUrl(feedItems, clickUrl);
+        TBRecommendationItem clickedItem = findItemByClickUrl(clickUrl);
         if (clickedItem == null) {
             return; // item that was clicked is not in this fragment
         }
@@ -122,20 +149,25 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     }
 
 
-    @Nullable
-    private TBRecommendationItem findItemByClickUrl(List<Object> feedItems, String clickUrl) {
-        for (Object feedItem : feedItems) {
-            if (feedItem instanceof TBRecommendationItem) {
-                TBRecommendationItem tbRecommendationItem = (TBRecommendationItem) feedItem;
 
-                String currentItemUrl = (tbRecommendationItem).getExtraDataMap().get("url");
-                if (("\"" + clickUrl + "\"").equals(currentItemUrl)) {
-                    return tbRecommendationItem;
-                }
 
-            } // else it's a fake item
+    boolean isSummaryPage(String clickUrl) {
+        TBRecommendationItem clickedItem = findItemByClickUrl(clickUrl);
+        if (clickedItem == null) {
+            return false;
         }
-        return null;
+
+        try {
+            final String custom_data = clickedItem.getExtraDataMap().get("custom_data");
+            if (!TextUtils.isEmpty(custom_data)) {
+                return new JSONObject(custom_data).optBoolean("is_summary", true);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        //default is to open in summary page anyway
+        return true;
     }
 
     class ShortItemViewHolder extends RecyclerView.ViewHolder {
@@ -170,14 +202,20 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             title.setEllipsize(TextUtils.TruncateAt.END);
 
             TBTextView brandingLabel = item.getBrandingView(context);
-            brandingLabel.setMaxLines(1);
-            brandingLabel.setLayoutParams(new FrameLayout.LayoutParams
-                    (ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
-            brandingLabel.setEllipsize(TextUtils.TruncateAt.END);
-            brandingLabel.setGravity(Gravity.CENTER);
+            if (brandingLabel != null) {
+                brandingLabel.setMaxLines(1);
+                brandingLabel.setLayoutParams(new FrameLayout.LayoutParams
+                        (ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+                brandingLabel.setEllipsize(TextUtils.TruncateAt.END);
+                brandingLabel.setGravity(Gravity.CENTER);
+            }
 
-            String timestamp = DateTimeUtil.getTimeBetween(item.getExtraDataMap().get("created"));
-            itemTime.setText(timestamp);
+            final HashMap<String, String> extraDataMap = item.getExtraDataMap();
+            final String created = extraDataMap.get("created");
+            if (created != null) {
+                String timestamp = DateTimeUtil.getTimeBetween(created);
+                itemTime.setText(timestamp);
+            }
 
             // remove our views from previous containers if necessary
             if (thumbnail.getParent() != null) {
@@ -190,7 +228,7 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             }
             itemTitleContainer.addView(title);
 
-            if (brandingLabel.getParent() != null) {
+            if (brandingLabel != null && brandingLabel.getParent() != null) {
                 ((ViewGroup) brandingLabel.getParent()).removeView(brandingLabel);
             }
             itemBrandingContainer.addView(brandingLabel);

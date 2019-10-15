@@ -5,9 +5,9 @@ android {
     defaultConfig {
         applicationId "com.taboola.taboola.multiple_tabs_sdk_api"
         minSdkVersion 17
-        targetSdkVersion 27
-        versionCode 1
-        versionName "1.0"
+        targetSdkVersion 28
+        versionCode 2
+        versionName "1.1"
 
         vectorDrawables.useSupportLibrary = true
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
@@ -24,9 +24,8 @@ android {
 
 dependencies {
     // SDK API dependencies
-    implementation 'com.taboola:android-sdk:2.3.4'
+    implementation 'com.taboola:android-sdk:2.3.6'
     implementation 'com.android.support:customtabs:28.0.0'
-    implementation 'com.squareup.retrofit2:retrofit:2.5.0'
     implementation 'com.squareup.retrofit2:converter-gson:2.5.0'
     implementation 'com.squareup.picasso:picasso:2.5.2'
 

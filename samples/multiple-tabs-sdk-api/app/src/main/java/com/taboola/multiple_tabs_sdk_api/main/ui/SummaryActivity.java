@@ -13,6 +13,7 @@ import com.squareup.picasso.Picasso;
 import com.taboola.android.TaboolaWidget;
 import com.taboola.android.api.TBPlacement;
 import com.taboola.android.api.TBRecommendationItem;
+import com.taboola.android.global_components.eventsmanager.EventType;
 import com.taboola.android.utils.OnClickHelper;
 import com.taboola.multiple_tabs_sdk_api.R;
 import com.taboola.multiple_tabs_sdk_api.main.data.RecommendationItemExtraData;
@@ -76,13 +77,11 @@ public class SummaryActivity extends Activity {
     }
 
     private void onTbItemFinishToLoad() {
-        final String eventType = "SummaryRender";
-        reportMobileEvent(eventType);
+        reportMobileEvent(EventType.SUMMARY_RENDER);
     }
 
     private void onReadMoreClicked() {
-        final String eventType = "ReadMoreClick";
-        reportMobileEvent(eventType);
+        reportMobileEvent(EventType.READ_MORE_CLICK);
 
         String url = getIntent().getStringExtra("clickUrl");
         OnClickHelper.openUrlInTabsOrBrowser(this, url);

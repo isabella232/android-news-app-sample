@@ -1,34 +1,34 @@
 {
-  "publisher": "sdk-tester",
-  "apiKey": "d39df1418f5a4819c9eae2ca02595d57de98c246",
+  "publisher": "sonynewssuiteandroidsdkapi-unitedkingdom",
+  "apiKey": "e802eec9372cba3e52a83a5a3645a1147229a5f9",
   "tabsConfig": [
     {
       "title": "Trending",
-      "placement": "AC-stream-trending-"
+      "placement": "Editorial Trending Thumbnails SummaryTest"
     },
     {
       "title": "Sports",
-      "placement": "AC-sports-"
+      "placement": "Editorial Sports Thumbnails"
     },
     {
       "title": "Business",
-      "placement": "AC-business-"
+      "placement": "Editorial Business Thumbnails"
     },
     {
       "title": "Entertainment",
-      "placement": "AC-entertainment-"
+      "placement": "Editorial Entertainment Thumbnails"
     },
     {
       "title": "Tech",
-      "placement": "AC-tech-"
+      "placement": "Editorial Tech Thumbnails"
     },
     {
       "title": "Politics",
-      "placement": "AC-politics-"
+      "placement": "Editorial Politics Thumbnails"
     },
     {
       "title": "Lifestyle",
-      "placement": "AC-lifestyle-"
+      "placement": "Editorial Lifestyle Thumbnails"
     }
   ]
 }

@@ -5,8 +5,8 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
+import android.text.TextUtils;
 
-import com.taboola.multiple_tabs_sdk_api.main.ui.TabFragment;
 import com.taboola.multiple_tabs_sdk_api.main.data.AppConfig;
 
 import java.util.ArrayList;
@@ -46,5 +46,22 @@ public class MainPagerAdapter extends FragmentStatePagerAdapter {
     @Override
     public CharSequence getPageTitle(int position) {
         return fragmentTitleList.get(position);
+    }
+
+    boolean isOpenInSummaryPage(String placementName, String clickUrl) {
+        TabFragment selectedFragment = null;
+        for (TabFragment fragment : fragmentList) {
+            final String curName = fragment.getPlacementName();
+            if (!TextUtils.isEmpty(curName) && placementName.startsWith(curName)) {
+                selectedFragment = fragment;
+                break;
+            }
+        }
+
+        if (selectedFragment != null) {
+            return selectedFragment.isOpenInSummaryPage(clickUrl);
+        }
+
+        return true;
     }
 }

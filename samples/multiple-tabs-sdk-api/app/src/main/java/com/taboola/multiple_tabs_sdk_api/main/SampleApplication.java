@@ -10,6 +10,7 @@ import com.taboola.android.utils.AssetUtil;
 import com.taboola.multiple_tabs_sdk_api.R;
 import com.taboola.multiple_tabs_sdk_api.main.data.AppConfig;
 
+import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -31,10 +32,8 @@ public class SampleApplication extends Application {
         Drawable imagePlaceholder = ResourcesCompat.getDrawable(getResources(), R.drawable.image_placeholder, null);
 
         TaboolaApi.getInstance(appConfig.getPublisher())
-                .init(getApplicationContext(), appConfig.getApiKey())
-                .setExtraProperties(taboolaExtraProperties)
+                .init(getApplicationContext(), appConfig.getApiKey(), taboolaExtraProperties)
                 .setImagePlaceholder(imagePlaceholder); // todo set other optional init params if you need to
-
     }
 
     public AppConfig getAppConfig() {

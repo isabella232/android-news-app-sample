@@ -81,8 +81,7 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public boolean onItemClick(String placementName, String itemId, String clickUrl, boolean isOrganic) {
 
-
-                        boolean openInSummaryPage = parseClickUrlForSummaryPage(clickUrl);
+                        boolean openInSummaryPage = pagerAdapter.isOpenInSummaryPage(placementName, clickUrl);
 
                         //this method used for debug and testing purpose only don't add it to your real code
                         if (isForceDebugMode()) {
@@ -109,13 +108,5 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    private boolean parseClickUrlForSummaryPage(String clickUrl) {
-        Uri uri = Uri.parse(clickUrl);
-        String redirUrl = uri.getQueryParameter("redir");
-        if (TextUtils.isEmpty(redirUrl)) {
-            return false;
-        }
-        return Uri.parse(redirUrl).getBooleanQueryParameter("summary_page", true);
-    }
 
 }
